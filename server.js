@@ -6,9 +6,9 @@ const dbConnection = require('./config/database_config');
 const categoryRoute = require('./routes/category_route');
 const ApiError = require('./utils/api_error');
 const globleError = require('./middlewares/error_middleware');
+dotenv.config({ path: 'config.env' });
 
 const PORT = process.env.PORT || 8000;
-dotenv.config({ path: 'configure.env' });
 
 dbConnection();
 
@@ -24,13 +24,21 @@ if (process.env.NODE_ENV == 'development') {
 app.use('/api/v1/categories', categoryRoute);
 
 app.all('*', (req, res, next) => {
-    const error = new Error(`con't find this route: ${req.originalUrl}`); 
+   // const error = new Error(`con't find this route: ${req.originalUrl}`); 
     next(new ApiError(false,true,`con't find this route: ${req.originalUrl}`,400));
 });
 
 app.use(globleError);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`server started on port: ${PORT}`);
+});
+
+process.on('unhandledRejection', (error) => {
+    console.log(`UnhandledRejection: ${error.name} | ${error.message}`);
+    server.close(() => {
+        console.log('shutting down.....');
+        process.exit(1);
+    })
 })
 
