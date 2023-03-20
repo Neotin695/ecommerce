@@ -1,16 +1,17 @@
 const ProductModel = require("../models/productModel");
 const factory = require("./handlerFactory");
+const { uploadMixOfImages } = require("../middlewares/uploadImageMiddleware");
 
 exports.createProduct = factory.createDocument(ProductModel);
 
-exports.uploadCategoryImage = factory.uploadImage("imageCover");
-
-exports.resizeImage = factory.resizeImage("products", "product");
-
 exports.updateProduct = factory.updateDocument(ProductModel);
 
-exports.fetchSpecificProduct = factory.fetchSpecificDocument(ProductModel);
+exports.deleteProduct = factory.deleteOneDocument(ProductModel);
 
 exports.fetchAllProducts = factory.fetchAllDocument(ProductModel);
 
-exports.deleteProduct = factory.deleteOneDocument(ProductModel);
+exports.fetchSpecificProduct = factory.fetchSpecificDocument(ProductModel);
+
+exports.uploadCategoryImage = uploadMixOfImages();
+
+exports.resizeImage = factory.resizeProductImages();

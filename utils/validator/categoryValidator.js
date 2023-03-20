@@ -33,7 +33,7 @@ exports.createCategoryValidator = [
 
 exports.updateCategoryValidator = [
   check("id").isMongoId().withMessage("invalid id format "),
-  check("name").custom((value, { req }) => {
+  check("name").optional().custom((value, { req }) => {
     req.body.slug = slugify(value);
     return true;
   }),

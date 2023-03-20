@@ -1,16 +1,17 @@
 const BrandModel = require("../models/brandModel");
 const factory = require("./handlerFactory");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 
 exports.createBrand = factory.createDocument(BrandModel);
 
-exports.uploadCategoryImage = factory.uploadImage("image");
+exports.updateBrand = factory.updateDocument(BrandModel);
 
-exports.resizeImage = factory.resizeImage("brands", "brand");
+exports.deleteBrand = factory.deleteOneDocument(BrandModel);
 
 exports.fetchAllBrand = factory.fetchAllDocument(BrandModel);
 
 exports.fetchSpecificBrand = factory.fetchSpecificDocument(BrandModel);
 
-exports.deleteBrand = factory.deleteOneDocument(BrandModel);
+exports.uploadCategoryImage = uploadSingleImage("image");
 
-exports.updateBrand = factory.updateDocument(BrandModel);
+exports.resizeImage = factory.resizeImage("brands", "brand", 600, 600);

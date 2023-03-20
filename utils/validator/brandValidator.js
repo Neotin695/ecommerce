@@ -32,7 +32,7 @@ exports.fetchOneBrandValidator = [
 
 exports.updateBrandValidator = [
   check("id").isMongoId().withMessage("invalide brand id format "),
-  check("name").custom((value, { req }) => {
+  check("name").optional().custom((value, { req }) => {
     req.body.slug = slugify(value);
     return true;
   }),

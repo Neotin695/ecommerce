@@ -53,9 +53,11 @@ exports.deleteSubCategoryValidator = [
 
 exports.updateSubCategoryValidator = [
   check("id").isMongoId().withMessage("invalid subCategory id format"),
-  check("name").custom((value, { req }) => {
-    req.body.slug = slugify(value);
-    return true;
-  }),
+  check("name")
+    .optional()
+    .custom((value, { req }) => {
+      req.body.slug = slugify(value);
+      return true;
+    }),
   validatorMiddleware,
 ];
