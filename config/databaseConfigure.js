@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const dbConnection = () =>
   mongoose
-    .connect("mongodb://127.0.0.1:27017")
+    .connect(process.env.DB_URL)
     .then((connect) => {
       console.log(`database running host: ${connect.connection.host}`);
     })
