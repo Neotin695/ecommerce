@@ -10,17 +10,24 @@ const {
   resizeProfileImage,
 } = require("../services/userService");
 
+const {
+  createUserValidator,
+  updateUserValidator,
+  deleteUserValidator,
+  fetchSpecificValidator,
+} = require("../utils/validator/userValidator");
+
 const router = express.Router();
 
 router
   .route("/")
-  .post(uploadProfileImage, resizeProfileImage, createUser)
+  .post(uploadProfileImage, resizeProfileImage, createUserValidator, createUser)
   .get(fetchAllUsers);
 
 router
   .route("/:id")
-  .put(uploadProfileImage, resizeProfileImage, updateUser)
-  .delete(deleteUser)
-  .get(fetchSpecificUser);
+  .put(uploadProfileImage, resizeProfileImage, updateUserValidator, updateUser)
+  .delete(deleteUserValidator, deleteUser)
+  .get(fetchSpecificValidator, fetchSpecificUser);
 
 module.exports = router;
