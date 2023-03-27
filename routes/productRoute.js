@@ -16,17 +16,38 @@ const {
   deleteProductValidator,
 } = require("../utils/validator/productValidator");
 
+const { protectRoute, authorizationUser } = require("../services/authService");
+
 const router = express.Router();
 
 router
   .route("/")
-  .post(uploadCategoryImage, resizeImage, createProductValidator, createProduct)
+  .post(
+    protectRoute,
+    authorizationUser("admin"),
+    uploadCategoryImage,
+    resizeImage,
+    createProductValidator,
+    createProduct
+  )
   .get(fetchAllProducts);
 
 router
   .route("/:id")
-  .put(uploadCategoryImage, resizeImage, updateProductValidator, updateProduct)
+  .put(
+    protectRoute,
+    authorizationUser("admin"),
+    uploadCategoryImage,
+    resizeImage,
+    updateProductValidator,
+    updateProduct
+  )
   .get(fetchOneProductValidator, fetchSpecificProduct)
-  .delete(deleteProductValidator, deleteProduct);
+  .delete(
+    protectRoute,
+    authorizationUser("admin"),
+    deleteProductValidator,
+    deleteProduct
+  );
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 // eslint-disable-next-line import/no-extraneous-dependencies
+const bcrypt = require("bcryptjs");
 const { isEmail } = require("validator");
 
 const userModel = mongoose.Schema(
@@ -29,14 +30,20 @@ const userModel = mongoose.Schema(
       lowercase: true,
       required: [true, "email required"],
     },
+    verificationCode: String,
+    verificationCodeExpire: Date,
+    isCodeVerified: Boolean,
     password: {
       type: String,
       trim: true,
       required: [true, "password required"],
-      maxlength: [20, "too long password"],
       minlength: [8, "too short password"],
     },
-    rule: {
+    active: {
+      type: Boolean,
+      defualt:true,
+    },
+    role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
@@ -57,6 +64,13 @@ userModel.post("init", (doc) => {
 });
 userModel.post("save", (doc) => {
   setImage(doc);
+});
+
+userModel.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
 });
 
 module.exports = mongoose.model("users", userModel);

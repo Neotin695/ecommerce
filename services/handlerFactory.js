@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 // eslint-disable-next-line import/no-extraneous-dependencies
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
+const jwt = require("jsonwebtoken");
 
 const ApiError = require("../utils/apiError");
 const ApiFuture = require("../utils/apiFuture");
@@ -13,6 +14,11 @@ exports.createDocument = (Model) =>
     res.status(201).json({ data: documents });
   });
 
+exports.generateToken = (payload) =>
+  jwt.sign({ userId: payload }, process.env.JWT_SECRET_KEY, {
+    expiresIn: process.env.EXPIRE_TIME,
+  });
+
 exports.updateDocument = (Model) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
@@ -20,7 +26,7 @@ exports.updateDocument = (Model) =>
       new: true,
     });
     if (!documents) {
-      return next(new ApiError(false, true, `no product for this id: ${id}`));
+      return next(new ApiError(false, true, `no document for this id: ${id}`));
     }
 
     res.status(200).json({ data: documents });
@@ -31,10 +37,10 @@ exports.deleteOneDocument = (Model) =>
     const { id } = req.params;
     const documents = await Model.findByIdAndDelete(id);
     if (!documents) {
-      return next(new ApiError(false, true, `no product for this id: ${id}`));
+      return next(new ApiError(false, true, `no document for this id: ${id}`));
     }
 
-    res.status(200).json({ message: "product deleted successfully" });
+    res.status(200).json({ message: "deleted successfully" });
   });
 
 exports.fetchAllDocument = (Model) =>
@@ -60,7 +66,7 @@ exports.fetchSpecificDocument = (Model) =>
     const { id } = req.params;
     const documents = await Model.findById(id);
     if (!documents) {
-      return next(new ApiError(false, true, `no product for this id: ${id}`));
+      return next(new ApiError(false, true, `no document for this id: ${id}`));
     }
 
     res.status(200).json({ data: documents });
