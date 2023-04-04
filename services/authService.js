@@ -16,18 +16,18 @@ exports.signupUser = asyncHandler(async (req, res, next) => {
     name: req.body.name,
     slug: slugify(req.body.name),
     email: req.body.email,
-    password: (await bcrypt.hash(req.body.password, 12)).toString(),
+    password: req.body.password,
+    active: true,
   });
 
-  const token = generateToken(user._id);
-
-  res.status(201).json({ data: user, token });
+  res.status(201).json({ data: user });
 });
 
 exports.signinUser = asyncHandler(async (req, res, next) => {
   const user = await UserModel.findOne({ email: req.body.email });
 
-  if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+  const password = await bcrypt.compare(req.body.password, user.password);
+  if (!user || !password) {
     return next(new ApiError(false, true, "incorrect email or password", 400));
   }
 
