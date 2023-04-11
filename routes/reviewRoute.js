@@ -1,4 +1,11 @@
-const express = require("express");
+const express = require("express"); 
+
+const {
+  createReviewValidator,
+  updateReviewValidator,
+  fetchSpecificReviewValidator,
+  deleteReviewValidator,
+} = require("../utils/validator/reviewValidator");
 
 const {
   createReview,
@@ -14,13 +21,33 @@ const router = express.Router();
 
 router
   .route("/")
-  .post(protectRoute, authorizationUser("user"), createReview)
+  .post(
+    protectRoute,
+    authorizationUser("user"),
+    createReviewValidator,
+    createReview
+  )
   .get(protectRoute, fetchAllReview);
 
 router
   .route("/:id")
-  .put(protectRoute, authorizationUser("user"), updateReview)
-  .get(protectRoute, authorizationUser("admin"), fetchSpecificReview)
-  .delete(protectRoute, authorizationUser("user", "admin"), deleteReview);
+  .put(
+    protectRoute,
+    authorizationUser("user"),
+    updateReviewValidator,
+    updateReview
+  )
+  .get(
+    protectRoute,
+    authorizationUser("admin"),
+    fetchSpecificReviewValidator,
+    fetchSpecificReview
+  )
+  .delete(
+    protectRoute,
+    authorizationUser("user", "admin"),
+    deleteReviewValidator,
+    deleteReview
+  );
 
 module.exports = router;

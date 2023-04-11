@@ -10,7 +10,10 @@ exports.deleteProduct = factory.deleteOneDocument(ProductModel);
 
 exports.fetchAllProducts = factory.fetchAllDocument(ProductModel);
 
-exports.fetchSpecificProduct = factory.fetchSpecificDocument(ProductModel);
+exports.fetchSpecificProduct = factory.fetchSpecificDocument(
+  ProductModel,
+  "reviews"
+);
 
 exports.uploadCategoryImage = uploadMixOfImages();
 

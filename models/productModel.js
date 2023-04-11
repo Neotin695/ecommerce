@@ -65,7 +65,11 @@ const productModel = new mongoose.Schema(
       lowercase: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
 
 const setImageUrl = (doc) => {
@@ -89,6 +93,12 @@ productModel.post("init", (doc) => {
 });
 productModel.post("save", (doc) => {
   setImageUrl(doc);
+});
+
+productModel.virtual("reviews", {
+  ref: "reviews",
+  foreignField: "product",
+  localField: "_id",
 });
 
 module.exports = mongoose.model("products", productModel);

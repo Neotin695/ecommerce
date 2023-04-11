@@ -61,15 +61,19 @@ exports.fetchAllDocument = (Model) =>
       .json({ results: documents.length, pagiationResult, data: documents });
   });
 
-exports.fetchSpecificDocument = (Model) =>
+exports.fetchSpecificDocument = (Model, populateOpt) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const documents = await Model.findById(id);
-    if (!documents) {
+    let query = await Model.findById(id);
+    if (populateOpt) {
+      query = query.populate(populateOpt);
+    }
+    const document = await query;
+    if (!document) {
       return next(new ApiError(false, true, `no document for this id: ${id}`));
     }
 
-    res.status(200).json({ data: documents });
+    res.status(200).json({ data: document });
   });
 
 exports.resizeImage = (folderName, modelName, width, height) =>
